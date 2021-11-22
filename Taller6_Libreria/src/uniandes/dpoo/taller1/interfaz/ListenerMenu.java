@@ -68,7 +68,6 @@ public class ListenerMenu implements ActionListener
 				if (resultado == JFileChooser.APPROVE_OPTION)
 				{
 					archivo_libros = fc.getSelectedFile();
-
 					ventana.cargarArchivos(archivo_categorias, archivo_libros);
 				}
 			}

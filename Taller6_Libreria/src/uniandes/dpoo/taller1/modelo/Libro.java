@@ -1,5 +1,6 @@
 package uniandes.dpoo.taller1.modelo;
 
+
 /**
  * Esta clase agrupa la información sobre un libro disponible en la librería
  */
@@ -59,8 +60,11 @@ public class Libro
 		autor = elAutor;
 		calificacion = laCalificacion;
 		portada = null;
+		
+
 		categoria = laCategoria;
 		categoria.agregarLibro(this);
+
 	}
 
 	// ************************************************************************

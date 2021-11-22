@@ -167,17 +167,22 @@ public class InterfazLibreria extends JFrame
 	 */
 	public void cargarArchivos(File archivo_categorias, File archivo_libros)
 	{
-		try
-		{
-			libreria = new Libreria(archivo_categorias.getPath(), archivo_libros.getPath());
-			panelCategorias.actualizarCategorias(libreria.darCategorias());
-		}
-		catch (Exception e)
-		{
-			JOptionPane.showMessageDialog(this, "Hubo un error leyendo los archivos", "Error de lectura",
-					JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
-		}
+	
+			try {
+				libreria = new Libreria(archivo_categorias.getPath(), archivo_libros.getPath());
+				panelCategorias.actualizarCategorias(libreria.darCategorias());
+			} 
+			
+			
+			catch (IOException e) {
+				JOptionPane.showMessageDialog(this, "Hubo un error leyendo los archivos", "Error de lectura",
+						JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			}
+
+			
+		
+
 
 	}
 
