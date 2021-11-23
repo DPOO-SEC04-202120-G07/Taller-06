@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import uniandes.dpoo.taller1.excepciones.CustomNullException;
+import uniandes.dpoo.taller1.interfaz.InterfazLibreria;
 
 /**
  * Esta clase agrupa toda la información de una librería: las categorías que se
@@ -32,6 +34,8 @@ public class Libreria {
 	 */
 	private ArrayList<Libro> catalogo;
 
+	private InterfazLibreria interfaz;
+
 	// ************************************************************************
 	// Constructores
 	// ************************************************************************
@@ -47,24 +51,13 @@ public class Libreria {
 	 * @throws IOException Lanza esta excepción si hay algún problema leyendo un
 	 *                     archivo
 	 */
-	public Libreria(String nombreArchivoCategorias, String nombreArchivoLibros)
-			throws IOException{
-		
-		
+	public Libreria(String nombreArchivoCategorias, String nombreArchivoLibros, InterfazLibreria interfaz)
+			throws IOException {
+
+		this.interfaz = interfaz;
 		this.categorias = cargarCategorias(nombreArchivoCategorias);
-	
-		
-		//En dado caso de no encontrarse un objeto al cargar la librería...
-		try {
-		this.catalogo = cargarCatalogo(nombreArchivoLibros);}
-		catch(CustomNullException e) {
-			
-			//Se revisa si falta una categoría y se procede a agregarla y volver a ejecutar la carga
-			if(e.getNullObject()==CustomNullException.NULL_CATEGORY) {
-				agregarNuevaCategoria(e.getCategoriaName());
-				cargarCatalogo(nombreArchivoLibros);
-				}
-		}
+		this.catalogo = cargarCatalogo(nombreArchivoLibros);
+
 	}
 
 	// ************************************************************************
@@ -146,6 +139,9 @@ public class Libreria {
 	private ArrayList<Libro> cargarCatalogo(String nombreArchivoLibros) throws IOException, CustomNullException {
 		ArrayList<Libro> libros = new ArrayList<Libro>();
 
+		boolean categorias_nuevas_cargadas = false;
+		HashMap<String, Categoria> mapNewCategories = new HashMap<String, Categoria>();
+
 		@SuppressWarnings("resource")
 		BufferedReader br = new BufferedReader(new FileReader(nombreArchivoLibros));
 		String linea = br.readLine(); // Ignorar la primera línea porque tiene los títulos:
@@ -160,12 +156,12 @@ public class Libreria {
 
 			// Excepción - Se hace visible cuando NO ENCUENTRA LA CATEGORÍA DEL LIBRO
 			// (Categoría nueva)
-			if(buscarCategoria(nombreCategoria) == null) {
-				CustomNullException customNullException = new CustomNullException(CustomNullException.NULL_CATEGORY);
-				customNullException.setCategoriaName(nombreCategoria);
-				throw customNullException;
+			if (buscarCategoria(nombreCategoria) == null) {
+				agregarNuevaCategoria(nombreCategoria);
+				categorias_nuevas_cargadas = true;
+				mapNewCategories.put(nombreCategoria, buscarCategoria(nombreCategoria));
 			}
-		
+
 			Categoria laCategoria = buscarCategoria(nombreCategoria);
 
 			String archivoPortada = partes[4];
@@ -186,6 +182,20 @@ public class Libreria {
 		}
 
 		br.close();
+
+		if (categorias_nuevas_cargadas) {
+
+			Iterator<String> iterCat = mapNewCategories.keySet().iterator();
+
+			while (iterCat.hasNext()) {
+				String nombreCategoria = iterCat.next();
+				CustomNullException customCategoriaException = new CustomNullException(
+						CustomNullException.NULL_CATEGORY);
+				customCategoriaException.setCategoriaName(nombreCategoria);
+				interfaz.errorHanlderInterfaz(this, customCategoriaException);
+			}
+
+		}
 
 		return libros;
 	}

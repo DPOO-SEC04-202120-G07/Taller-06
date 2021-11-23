@@ -20,6 +20,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
+import uniandes.dpoo.taller1.excepciones.CustomNullException;
 import uniandes.dpoo.taller1.modelo.Categoria;
 import uniandes.dpoo.taller1.modelo.Libreria;
 import uniandes.dpoo.taller1.modelo.Libro;
@@ -28,8 +29,7 @@ import uniandes.dpoo.taller1.modelo.Libro;
  * Esta clase representa a la ventana principal de la aplicación
  */
 @SuppressWarnings("serial")
-public class InterfazLibreria extends JFrame
-{
+public class InterfazLibreria extends JFrame {
 
 	// ************************************************************************
 	// Atributos
@@ -97,8 +97,7 @@ public class InterfazLibreria extends JFrame
 	 * Construye la ventana principal para la aplicación, pero no carga la
 	 * información de ninguna librería.
 	 */
-	public InterfazLibreria()
-	{
+	public InterfazLibreria() {
 		barraMenu = new JMenuBar();
 		setJMenuBar(barraMenu);
 
@@ -114,11 +113,9 @@ public class InterfazLibreria extends JFrame
 
 		menuSalir = new JMenuItem("Salir", KeyEvent.VK_Q);
 		menuSalir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
-		menuSalir.addActionListener(new ActionListener()
-		{
+		menuSalir.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
 		});
@@ -165,24 +162,18 @@ public class InterfazLibreria extends JFrame
 	 *                           categorías que se usarán para los libros
 	 * @param archivo_libros     El archivo que tiene la información de los libros
 	 */
-	public void cargarArchivos(File archivo_categorias, File archivo_libros)
-	{
-	
-			try {
-				libreria = new Libreria(archivo_categorias.getPath(), archivo_libros.getPath());
-				panelCategorias.actualizarCategorias(libreria.darCategorias());
-			} 
-			
-			
-			catch (IOException e) {
-				JOptionPane.showMessageDialog(this, "Hubo un error leyendo los archivos", "Error de lectura",
-						JOptionPane.ERROR_MESSAGE);
-				e.printStackTrace();
-			}
+	public void cargarArchivos(File archivo_categorias, File archivo_libros) {
 
-			
-		
+		try {
+			libreria = new Libreria(archivo_categorias.getPath(), archivo_libros.getPath(), this);
+			panelCategorias.actualizarCategorias(libreria.darCategorias());
+		}
 
+		catch (IOException e) {
+			JOptionPane.showMessageDialog(this, "Hubo un error leyendo los archivos", "Error de lectura",
+					JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
 
 	}
 
@@ -192,8 +183,7 @@ public class InterfazLibreria extends JFrame
 	 * 
 	 * @param categoria La categoría para la que se deben mostrar los libros ahora
 	 */
-	public void cambiarCategoria(Categoria categoria)
-	{
+	public void cambiarCategoria(Categoria categoria) {
 		ArrayList<Libro> libros = libreria.darLibros(categoria.darNombre());
 		panelLibros.actualizarLibros(libros);
 		mostrarLibro(libros.get(0));
@@ -205,8 +195,7 @@ public class InterfazLibreria extends JFrame
 	 * 
 	 * @param libro El libro para el que se debe mostrar la información
 	 */
-	public void mostrarLibro(Libro libro)
-	{
+	public void mostrarLibro(Libro libro) {
 		panelLibro.actualizarLibro(libro);
 	}
 
@@ -216,19 +205,14 @@ public class InterfazLibreria extends JFrame
 	 * Si existe un libro, le muestra al usuario la información del libro en el
 	 * panel 'panelLibro'.
 	 */
-	public void buscarLibro()
-	{
+	public void buscarLibro() {
 		String titulo = JOptionPane.showInputDialog(this, "Escriba el título del libro que busca", "titulo");
-		if (titulo != null)
-		{
+		if (titulo != null) {
 			Libro libro = libreria.buscarLibro(titulo);
-			if (libro == null)
-			{
+			if (libro == null) {
 				JOptionPane.showMessageDialog(this, "No se encontró un libro con ese título", "No hay libro",
 						JOptionPane.INFORMATION_MESSAGE);
-			}
-			else
-			{
+			} else {
 				mostrarLibro(libro);
 			}
 		}
@@ -241,19 +225,14 @@ public class InterfazLibreria extends JFrame
 	 * La lista de libros que correspondan al autor dado se muestra en el panel
 	 * panelLibros.
 	 */
-	public void buscarLibrosAutor()
-	{
+	public void buscarLibrosAutor() {
 		String autor = JOptionPane.showInputDialog(this, "Escriba al menos una parte del autor que busca", "autor");
-		if (autor != null)
-		{
+		if (autor != null) {
 			ArrayList<Libro> libros = libreria.buscarLibrosAutor(autor);
-			if (libros.isEmpty())
-			{
+			if (libros.isEmpty()) {
 				JOptionPane.showMessageDialog(this, "No hay ningún autor con ese nombre", "No hay libro",
 						JOptionPane.INFORMATION_MESSAGE);
-			}
-			else
-			{
+			} else {
 				panelLibros.actualizarLibros(libros);
 				mostrarLibro(libros.get(0));
 			}
@@ -264,23 +243,17 @@ public class InterfazLibreria extends JFrame
 	 * Le pide al usuario el nombre de un autor y le informa en qué categorías hay
 	 * libros de ese autor.
 	 */
-	public void buscarCategoriasAutor()
-	{
+	public void buscarCategoriasAutor() {
 
 		String autor = JOptionPane.showInputDialog(this, "Escriba el nombre del autor que está buscando", "autor");
-		if (autor != null)
-		{
+		if (autor != null) {
 			ArrayList<Categoria> categorias = libreria.buscarCategoriasAutor(autor);
-			if (categorias.isEmpty())
-			{
+			if (categorias.isEmpty()) {
 				JOptionPane.showMessageDialog(this, "No hay ningún autor con ese nombre", "No hay libro",
 						JOptionPane.INFORMATION_MESSAGE);
-			}
-			else
-			{
+			} else {
 				String mensaje = "Hay libros de ese autor en las siguientes categorías:\n";
-				for (Categoria categoria : categorias)
-				{
+				for (Categoria categoria : categorias) {
 					mensaje += " " + categoria.darNombre() + "\n";
 				}
 				JOptionPane.showMessageDialog(this, mensaje, "Categorías", JOptionPane.INFORMATION_MESSAGE);
@@ -292,8 +265,7 @@ public class InterfazLibreria extends JFrame
 	 * Le informa al usuario la calificación promedio de los libros de la librería,
 	 * con base en la información disponible en cada uno de los libros.
 	 */
-	public void calcularCalificacionPromedio()
-	{
+	public void calcularCalificacionPromedio() {
 		double calificacion = libreria.calificacionPromedio();
 		calificacion = (double) ((int) calificacion * 1000) / 1000;
 		JOptionPane.showMessageDialog(this, "La calificación promedio de los libros es " + calificacion,
@@ -303,8 +275,7 @@ public class InterfazLibreria extends JFrame
 	/**
 	 * Le informa al usuario cuál es la categoría con más libros en la librería.
 	 */
-	public void categoriaConMasLibros()
-	{
+	public void categoriaConMasLibros() {
 		Categoria cat = libreria.categoriaConMasLibros();
 		int cantidad = cat.contarLibrosEnCategoria();
 		String mensaje = "La categoría con más libros es " + cat.darNombre() + " y tiene " + cantidad + " libros";
@@ -315,8 +286,7 @@ public class InterfazLibreria extends JFrame
 	 * Le informa al usuario la cantidad de libros en la librería para los cuales no
 	 * se tiene una portada.
 	 */
-	public void contarSinPortada()
-	{
+	public void contarSinPortada() {
 		int cantidad = libreria.contarLibrosSinPortada();
 		String mensaje = "Hay " + cantidad + " libros sin portada";
 		JOptionPane.showMessageDialog(this, mensaje, "Libros sin portada", JOptionPane.INFORMATION_MESSAGE);
@@ -326,8 +296,7 @@ public class InterfazLibreria extends JFrame
 	 * Le informa al usuario cuál es la categoría cuyos libros están mejor
 	 * calificados.
 	 */
-	public void categoriaMejorCalificacion()
-	{
+	public void categoriaMejorCalificacion() {
 		Categoria cat = libreria.categoriaConMejoresLibros();
 		double calificacion = cat.calificacionPromedio();
 		calificacion = (double) ((int) calificacion * 1000) / 1000;
@@ -341,15 +310,23 @@ public class InterfazLibreria extends JFrame
 	 * Le informa al usuario si hay un autor que tenga libros en más de una
 	 * categoría.
 	 */
-	public void hayAutorEnVariasCategorias()
-	{
+	public void hayAutorEnVariasCategorias() {
 		boolean hay = libreria.hayAutorEnVariasCategorias();
 		String mensaje = "No hay ningún autor con al menos un libro en dos categorías diferentes.";
-		if (hay)
-		{
+		if (hay) {
 			mensaje = "Hay al menos un autor con al menos un libro en dos categorías diferentes.";
 		}
 		JOptionPane.showMessageDialog(this, mensaje, "Consulta", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	public void errorHanlderInterfaz(Libreria lib, CustomNullException e) {
+		if (e.getNullObject() == CustomNullException.NULL_CATEGORY) {
+			String mensaje = "Se ha agregado la categoría: " + e.getCategoriaName() + "\nCon "
+					+ lib.darLibros(e.getCategoriaName()).size() + " libros agregados.";
+			JOptionPane.showMessageDialog(this, mensaje, "Categorías nuevas encontradas",
+					JOptionPane.INFORMATION_MESSAGE);
+		}
+
 	}
 
 	// ************************************************************************
@@ -367,21 +344,14 @@ public class InterfazLibreria extends JFrame
 	 * @throws ClassNotFoundException
 	 */
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException,
-			IllegalAccessException, UnsupportedLookAndFeelException
-	{
+			IllegalAccessException, UnsupportedLookAndFeelException {
 		/*
-		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
-		{
-			if ("Nimbus".equals(info.getName()))
-			{
-				UIManager.setLookAndFeel(info.getClassName());
-				break;
-			}
-		}
-		*/
+		 * for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) { if
+		 * ("Nimbus".equals(info.getName())) {
+		 * UIManager.setLookAndFeel(info.getClassName()); break; } }
+		 */
 		FlatLightLaf.install();
 		// UIManager.setLookAndFeel( new FlatDarculaLaf());
-
 
 		new InterfazLibreria();
 	}
