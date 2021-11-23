@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import uniandes.dpoo.taller1.excepciones.CustomNullException;
+import uniandes.dpoo.taller1.excepciones.CustomRepeatedException;
 import uniandes.dpoo.taller1.interfaz.InterfazLibreria;
 
 /**
@@ -388,6 +389,27 @@ public class Libreria {
 			}
 		}
 		return categoriaGanadora;
+	}
+
+	public Categoria obtenerCategoria(String nombreCategoria, String nuevoNombre) throws CustomRepeatedException {
+
+		Categoria categoria_buscada = null;
+
+		for (int i = 0; i < categorias.length; i++) {
+			Categoria cat = categorias[i];
+
+			if (cat.darNombre() == nombreCategoria) {
+				categoria_buscada = cat;
+			}
+			
+			//SE REVISA SI EL NOMBRE ESTÁ REPETIDO Y SE LANZA UNA EXCEPCIÓN
+			if(cat.darNombre().equals(nuevoNombre)) {
+				CustomRepeatedException excepcionCategoriaRepetida = new CustomRepeatedException(nuevoNombre);
+				throw excepcionCategoriaRepetida;
+			}
+
+		}
+		return categoria_buscada;
 	}
 
 	/**

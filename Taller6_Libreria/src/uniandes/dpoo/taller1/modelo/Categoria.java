@@ -168,6 +168,10 @@ public class Categoria
 
 		return librosAutor;
 	}
+	
+	public void renombrar(String nuevoNombre) {
+		this.nombre = nuevoNombre;
+	}
 
 	// ************************************************************************
 	// Métodos sobrecargados

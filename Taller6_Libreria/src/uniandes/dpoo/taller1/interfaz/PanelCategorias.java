@@ -96,4 +96,7 @@ public class PanelCategorias extends JPanel implements ItemListener
 			}
 		}
 	}
+	public JComboBox<Categoria> getComboBoxCategorias() {
+		return this.cbbCategorias;
+	}
 }

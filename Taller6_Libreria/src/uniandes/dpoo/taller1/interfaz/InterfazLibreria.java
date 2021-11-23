@@ -9,18 +9,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
 import uniandes.dpoo.taller1.excepciones.CustomNullException;
+import uniandes.dpoo.taller1.excepciones.CustomRepeatedException;
 import uniandes.dpoo.taller1.modelo.Categoria;
 import uniandes.dpoo.taller1.modelo.Libreria;
 import uniandes.dpoo.taller1.modelo.Libro;
@@ -317,6 +321,43 @@ public class InterfazLibreria extends JFrame {
 			mensaje = "Hay al menos un autor con al menos un libro en dos categorías diferentes.";
 		}
 		JOptionPane.showMessageDialog(this, mensaje, "Consulta", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	public void renombrarCategoria() {
+
+		JLabel ingreseCat = new JLabel("Seleccione la categoría que desea renombrar: ");
+
+		JComboBox<Categoria> cbbCategorias = new JComboBox<Categoria>();
+
+		int categorias_size = panelCategorias.getComboBoxCategorias().getItemCount();
+
+		for (int i = 0; i < categorias_size; i++) {
+			Categoria actualCategoria = panelCategorias.getComboBoxCategorias().getItemAt(i);
+			cbbCategorias.addItem(actualCategoria);
+		}
+
+		JLabel nuevaCatLabel = new JLabel("Ingrese el nombre con el que desea renombrar la categoria: ");
+		JTextField nuevoNombreCat = new JTextField();
+
+		Object[] mensaje = new Object[] { ingreseCat, cbbCategorias, nuevaCatLabel, nuevoNombreCat };
+
+		int paneResponse = JOptionPane.showConfirmDialog(this, mensaje, "Renombrar categoría",
+				JOptionPane.OK_CANCEL_OPTION);
+
+		if (paneResponse == JOptionPane.OK_OPTION) {
+			Categoria categoriaAModificar;
+			try {
+				categoriaAModificar = libreria.obtenerCategoria(((Categoria) cbbCategorias.getSelectedItem()).darNombre(), nuevoNombreCat.getText());
+				categoriaAModificar.renombrar(nuevoNombreCat.getText());
+				JOptionPane.showMessageDialog(this, "El nombre de la categoría se ha modificado exitosamente.");
+			
+			} catch (CustomRepeatedException e) {
+				JOptionPane.showMessageDialog(this, "¡Se ha intentado renombrar una categoría con un nombre ya existente! Intentelo de nuevo.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+			
+		}
+
 	}
 
 	public void errorHanlderInterfaz(Libreria lib, CustomNullException e) {

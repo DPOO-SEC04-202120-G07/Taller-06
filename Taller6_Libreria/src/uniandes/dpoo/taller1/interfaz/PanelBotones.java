@@ -38,6 +38,8 @@ public class PanelBotones extends JPanel implements ActionListener
 	private final static String CONTAR_SIN_PORTADA = "ContarSinPortada";
 
 	private final static String AUTOR_VARIAS_CATEGORIAS = "HayAutorEnVariasCategorias";
+	
+	private final static String RENOMBRAR_CATEGORIA = "RenombrarCategoria";
 
 	// ************************************************************************
 	// Atributos
@@ -66,11 +68,14 @@ public class PanelBotones extends JPanel implements ActionListener
 		agregarBoton(BUSCAR_LIBRO, "Buscar libro con titulo", "./data/iconos/libros.png");
 		agregarBoton(BUSCAR_LIBROS_AUTOR, "Buscar libros de un autor", "./data/iconos/autor2.png");
 		agregarBoton(BUSCAR_CATEGORIA_AUTOR, "Buscar categorías autor", "./data/iconos/contenido.png");
-		agregarBoton(CALIFICACION, "Buscar libro con titulo", "./data/iconos/estrella.png");
-		agregarBoton(CATEGORIA_MAS_LIBROS, "Buscar libro con titulo", "./data/iconos/libreria.png");
-		agregarBoton(CONTAR_SIN_PORTADA, "Buscar libro con titulo", "./data/iconos/libro.png");
-		agregarBoton(CATEGORIA_MEJOR, "Buscar libro con titulo", "./data/iconos/premio.png");
-		agregarBoton(AUTOR_VARIAS_CATEGORIAS, "Buscar libro con titulo", "./data/iconos/autor.png");
+		agregarBoton(CALIFICACION, "Calificación promedio de los libros", "./data/iconos/estrella.png");
+		agregarBoton(CATEGORIA_MAS_LIBROS, "Categoría con más libros", "./data/iconos/libreria.png");
+		agregarBoton(CONTAR_SIN_PORTADA, "Libros sin portada", "./data/iconos/libro.png");
+		agregarBoton(CATEGORIA_MEJOR, "Categoría con mejor calificación promedio", "./data/iconos/premio.png");
+		agregarBoton(AUTOR_VARIAS_CATEGORIAS, "Autor en múltiples categorías", "./data/iconos/autor.png");
+		
+		//BOTÓN NUEVO PARA RENOMBRAR CATEGORÍA
+		agregarBoton(RENOMBRAR_CATEGORIA, "Renombrar una categoría", "./data/iconos/renombrar.png");
 	}
 
 	// ************************************************************************
@@ -144,6 +149,9 @@ public class PanelBotones extends JPanel implements ActionListener
 		else if (AUTOR_VARIAS_CATEGORIAS.equals(comando))
 		{
 			ventana.hayAutorEnVariasCategorias();
+		}
+		else if(RENOMBRAR_CATEGORIA.equals(comando)) {
+			ventana.renombrarCategoria();
 		}
 	}
 
