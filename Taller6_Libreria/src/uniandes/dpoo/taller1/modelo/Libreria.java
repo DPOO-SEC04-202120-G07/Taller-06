@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import uniandes.dpoo.taller1.excepciones.CustomNullAuthors;
 import uniandes.dpoo.taller1.excepciones.CustomNullException;
 import uniandes.dpoo.taller1.excepciones.CustomRepeatedException;
 import uniandes.dpoo.taller1.interfaz.InterfazLibreria;
@@ -296,8 +297,9 @@ public class Libreria {
 	 *                    necesariamente corresponde al nombre completo de un autor.
 	 * @return Una lista con todos los libros cuyo autor coincida con la cadena
 	 *         indicada
+	 * @throws CustomNullAuthors 
 	 */
-	public ArrayList<Libro> buscarLibrosAutor(String cadenaAutor) {
+	public ArrayList<Libro> buscarLibrosAutor(String cadenaAutor) throws CustomNullAuthors {
 		ArrayList<Libro> librosAutor = new ArrayList<Libro>();
 
 		for (int i = 0; i < categorias.length; i++) {
@@ -305,6 +307,11 @@ public class Libreria {
 			if (!librosCategoria.isEmpty()) {
 				librosAutor.addAll(librosCategoria);
 			}
+		}
+		
+		//Se lanza un error en dado caso de que el autor no tenga ni un solo libro registrado (Ningún libro encontrado)
+		if(librosAutor.size() == 0) {
+			throw new CustomNullAuthors(cadenaAutor);
 		}
 
 		return librosAutor;
@@ -457,6 +464,37 @@ public class Libreria {
 		}
 
 		return hayAutorEnVariasCategorias;
+	}
+	
+	public int getIndiceLibro(Libro libroAEliminar) {
+		
+		Iterator<Libro> iterLibros = catalogo.iterator();
+		int indiceLibro = 0;
+		int indiceRetornar = 0;
+		
+		while(iterLibros.hasNext()) {
+			Libro libroActual = iterLibros.next();
+			
+			if(libroActual.equals(libroAEliminar)) {
+				catalogo.remove(indiceLibro);
+				indiceRetornar = indiceLibro;
+			}
+			
+			indiceLibro += 1;
+			
+		}
+		
+	return indiceRetornar;
+	}
+
+	public void eliminarLibro(Libro libroAEliminar) {
+	
+		//Se elimina del catalogo general
+		catalogo.remove(libroAEliminar);	
+		
+		//Se elimina de la lista de su respectiva categoría
+		Categoria categoriaLibElm = libroAEliminar.darCategoria();
+		categoriaLibElm.eliminarLibro(libroAEliminar);
 	}
 
 }

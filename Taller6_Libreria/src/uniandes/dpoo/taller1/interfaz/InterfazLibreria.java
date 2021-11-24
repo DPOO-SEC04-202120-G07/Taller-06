@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -23,6 +24,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
+import uniandes.dpoo.taller1.excepciones.CustomNullAuthors;
 import uniandes.dpoo.taller1.excepciones.CustomNullException;
 import uniandes.dpoo.taller1.excepciones.CustomRepeatedException;
 import uniandes.dpoo.taller1.modelo.Categoria;
@@ -228,8 +230,9 @@ public class InterfazLibreria extends JFrame {
 	 * 
 	 * La lista de libros que correspondan al autor dado se muestra en el panel
 	 * panelLibros.
+	 * @throws CustomNullAuthors 
 	 */
-	public void buscarLibrosAutor() {
+	public void buscarLibrosAutor() throws CustomNullAuthors {
 		String autor = JOptionPane.showInputDialog(this, "Escriba al menos una parte del autor que busca", "autor");
 		if (autor != null) {
 			ArrayList<Libro> libros = libreria.buscarLibrosAutor(autor);
@@ -347,17 +350,90 @@ public class InterfazLibreria extends JFrame {
 		if (paneResponse == JOptionPane.OK_OPTION) {
 			Categoria categoriaAModificar;
 			try {
-				categoriaAModificar = libreria.obtenerCategoria(((Categoria) cbbCategorias.getSelectedItem()).darNombre(), nuevoNombreCat.getText());
+				categoriaAModificar = libreria.obtenerCategoria(
+						((Categoria) cbbCategorias.getSelectedItem()).darNombre(), nuevoNombreCat.getText());
 				categoriaAModificar.renombrar(nuevoNombreCat.getText());
 				JOptionPane.showMessageDialog(this, "El nombre de la categoría se ha modificado exitosamente.");
-			
+
 			} catch (CustomRepeatedException e) {
-				JOptionPane.showMessageDialog(this, "¡Se ha intentado renombrar una categoría con un nombre ya existente! Intentelo de nuevo.", "Error",
+				JOptionPane.showMessageDialog(this,
+						"¡Se ha intentado renombrar una categoría con un nombre ya existente! Intentelo de nuevo.",
+						"Error", JOptionPane.ERROR_MESSAGE);
+			}
+
+		}
+
+	}
+
+	public void eliminarLibrosAutor() {
+		
+		ArrayList<String> autoresEncontrados = new ArrayList<String>();
+		ArrayList<String> autoresNoEncontrados = new ArrayList<String>();
+		ArrayList<Libro>  librosAEliminar = new ArrayList<Libro>();
+		
+		String mensaje_no_encontrados = "";
+		String mensaje_encontrados = "";
+		
+		JLabel labelPreguntaAutores = new JLabel(
+				"Ingrese el nombre de los autores cuyos libros desea eliminar separados por una coma (,): ");
+		JTextField textFieldAutores = new JTextField();
+
+		Object[] mensaje = new Object[] { labelPreguntaAutores, textFieldAutores };
+
+		int paneResponse = JOptionPane.showConfirmDialog(this, mensaje, " Eliminar libros - Autor",
+				JOptionPane.OK_CANCEL_OPTION);
+
+		if (paneResponse == JOptionPane.OK_OPTION) {
+			
+			String listaAutoresStr = textFieldAutores.getText();
+			String[] listaAutoresArray = listaAutoresStr.split(",");
+			
+			for(int i = 0; i < listaAutoresArray.length; i++) {
+				
+				String autorActual = listaAutoresArray[i].strip();
+				
+				try {
+					ArrayList<Libro> listaLibrosAutor = libreria.buscarLibrosAutor(autorActual);
+					autoresEncontrados.add(autorActual);
+					mensaje_encontrados += autorActual + ",";
+					librosAEliminar.addAll(listaLibrosAutor);
+					
+					
+				} catch (CustomNullAuthors e) {
+					autoresNoEncontrados.add(e.getAutorNulo());
+					mensaje_no_encontrados += e.getAutorNulo() + ", ";
+				}
+				
+			
+			}
+			
+			//Se evalua que mensaje y accion tomar 
+			if(autoresNoEncontrados.size() != 0) {
+				
+				String mensaje_error = "Los siguientes nombres corresponden a autores existentes: " + mensaje_encontrados;
+				mensaje_error += "\n Los siguientes nombres corresponden a autores inexistentes: " + mensaje_no_encontrados;
+				
+				
+				JOptionPane.showMessageDialog(this, mensaje_error, "Operación cancelada - Autor no encontrado",
 						JOptionPane.ERROR_MESSAGE);
 			}
 			
+			else {
+				
+				Iterator<Libro> iterLibrosEliminar = librosAEliminar.iterator();
+				
+				
+				while(iterLibrosEliminar.hasNext()) {
+					Libro libroElimActual = iterLibrosEliminar.next();
+					libreria.eliminarLibro(libroElimActual);
+				}
+				
+				String mensaje_exito = "Se han eliminado exitosamente " + librosAEliminar.size() + " libros.";
+				JOptionPane.showMessageDialog(this, mensaje_exito, "Operación exitosa - Libros eliminados",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+			
 		}
-
 	}
 
 	public void errorHanlderInterfaz(Libreria lib, CustomNullException e) {

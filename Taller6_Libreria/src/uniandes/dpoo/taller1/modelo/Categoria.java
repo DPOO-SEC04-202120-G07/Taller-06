@@ -169,6 +169,10 @@ public class Categoria
 		return librosAutor;
 	}
 	
+	public void eliminarLibro(Libro libroEliminar) {
+		libros.remove(libroEliminar);
+	}
+	
 	public void renombrar(String nuevoNombre) {
 		this.nombre = nuevoNombre;
 	}

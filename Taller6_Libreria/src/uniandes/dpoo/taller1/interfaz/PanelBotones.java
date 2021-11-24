@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import uniandes.dpoo.taller1.excepciones.CustomNullAuthors;
+
 /**
  * En este panel se tienen los botones con acciones para realizar sobre la
  * librería.
@@ -40,6 +42,8 @@ public class PanelBotones extends JPanel implements ActionListener
 	private final static String AUTOR_VARIAS_CATEGORIAS = "HayAutorEnVariasCategorias";
 	
 	private final static String RENOMBRAR_CATEGORIA = "RenombrarCategoria";
+	
+	private final static String ELIMINAR_LIBROS_AUTOR = "eliminarLibrosAutor";
 
 	// ************************************************************************
 	// Atributos
@@ -73,10 +77,14 @@ public class PanelBotones extends JPanel implements ActionListener
 		agregarBoton(CONTAR_SIN_PORTADA, "Libros sin portada", "./data/iconos/libro.png");
 		agregarBoton(CATEGORIA_MEJOR, "Categoría con mejor calificación promedio", "./data/iconos/premio.png");
 		agregarBoton(AUTOR_VARIAS_CATEGORIAS, "Autor en múltiples categorías", "./data/iconos/autor.png");
-		
+
 		//BOTÓN NUEVO PARA RENOMBRAR CATEGORÍA
 		agregarBoton(RENOMBRAR_CATEGORIA, "Renombrar una categoría", "./data/iconos/renombrar.png");
-	}
+	
+		//BOTÓN PARA ELIMINAR LOS LIBROS DE UNO O VARIOS AUTORES A LA VEZ
+		agregarBoton(ELIMINAR_LIBROS_AUTOR, "Eliminar libros de un autos", "./data/iconos/eliminar.png");
+		
+	}	
 
 	// ************************************************************************
 	// Métodos
@@ -124,7 +132,10 @@ public class PanelBotones extends JPanel implements ActionListener
 		}
 		else if (BUSCAR_LIBROS_AUTOR.equals(comando))
 		{
-			ventana.buscarLibrosAutor();
+			try {
+				ventana.buscarLibrosAutor();
+			} catch (CustomNullAuthors e1) {
+			}
 		}
 		else if (BUSCAR_CATEGORIA_AUTOR.equals(comando))
 		{
@@ -152,6 +163,10 @@ public class PanelBotones extends JPanel implements ActionListener
 		}
 		else if(RENOMBRAR_CATEGORIA.equals(comando)) {
 			ventana.renombrarCategoria();
+		}
+		
+		else if(ELIMINAR_LIBROS_AUTOR.equals(comando)) {
+			ventana.eliminarLibrosAutor();
 		}
 	}
 
