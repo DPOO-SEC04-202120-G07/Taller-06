@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import uniandes.dpoo.taller1.excepciones.CustomMissingBook;
 import uniandes.dpoo.taller1.excepciones.CustomNullAuthors;
 import uniandes.dpoo.taller1.excepciones.CustomNullException;
 import uniandes.dpoo.taller1.excepciones.CustomRepeatedException;
@@ -487,14 +488,20 @@ public class Libreria {
 	return indiceRetornar;
 	}
 
-	public void eliminarLibro(Libro libroAEliminar) {
+	public void eliminarLibro(Libro libroAEliminar) throws CustomMissingBook {
 	
+		try {
 		//Se elimina del catalogo general
 		catalogo.remove(libroAEliminar);	
 		
 		//Se elimina de la lista de su respectiva categoría
 		Categoria categoriaLibElm = libroAEliminar.darCategoria();
-		categoriaLibElm.eliminarLibro(libroAEliminar);
+		categoriaLibElm.eliminarLibro(libroAEliminar);}
+		
+		//Excepción en dado caso de que por cualquier motivo no se puedan eliminar los libros
+		catch (Exception e){
+			throw new CustomMissingBook(libroAEliminar);
+		}
 	}
 
 }

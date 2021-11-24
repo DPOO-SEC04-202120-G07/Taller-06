@@ -24,6 +24,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
+import uniandes.dpoo.taller1.excepciones.CustomMissingBook;
 import uniandes.dpoo.taller1.excepciones.CustomNullAuthors;
 import uniandes.dpoo.taller1.excepciones.CustomNullException;
 import uniandes.dpoo.taller1.excepciones.CustomRepeatedException;
@@ -425,7 +426,25 @@ public class InterfazLibreria extends JFrame {
 				
 				while(iterLibrosEliminar.hasNext()) {
 					Libro libroElimActual = iterLibrosEliminar.next();
-					libreria.eliminarLibro(libroElimActual);
+					
+					//Se captura la excepción en dado caso que no se pueda eliminar el libro.
+					try {
+						libreria.eliminarLibro(libroElimActual);
+					} catch (CustomMissingBook e) {
+						
+						//Se le notifica al usuario del error (No se pudo eliminar el libro)
+						Libro libroErroneo = e.getMissingBook();
+						String titulo = libroErroneo.darTitulo();
+						String autor = libroErroneo.darAutor();
+						String categoria = libroErroneo.darCategoria().darNombre();
+					
+						String mensaje_libro = "No ha sido posible eliminar el libro: " + titulo;
+						mensaje_libro += "\nAutor: " + autor;
+						mensaje_libro += "\nCategoria: " + categoria;
+						
+						JOptionPane.showMessageDialog(this, mensaje_libro, "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
 				}
 				
 				String mensaje_exito = "Se han eliminado exitosamente " + librosAEliminar.size() + " libros.";
